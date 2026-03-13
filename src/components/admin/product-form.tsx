@@ -2,7 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreateProductSchema, type CreateProductInput } from "@/modules/products/product.validation";
+import { CreateProductSchema, type CreateProductInput } from "@/modules/products/validation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -22,7 +22,7 @@ interface ProductFormProps {
   initialData?: {
     name: string;
     description?: string | null;
-    price: any; // Prisma Decimal
+    price: { toString(): string }; // Prisma Decimal
     stock: number;
     imageUrl?: string | null;
     categoryId?: string | null;
@@ -46,6 +46,7 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
     watch,
     setValue,
   } = useForm<CreateProductInput>({
+    // @ts-expect-error - Zod/RHF type mismatch
     resolver: zodResolver(CreateProductSchema),
     defaultValues: initialData ? {
       ...initialData,
@@ -128,88 +129,111 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-      <div className="lg:col-span-2 space-y-8">
-        <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-8 space-y-6">
-          <div className="flex items-center gap-3 mb-2">
-            <Info size={18} className="text-zinc-500" />
-            <h2 className="text-lg font-bold">Base Information</h2>
+    <form onSubmit={handleSubmit(onSubmit as any)} className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+      <div className="lg:col-span-2 space-y-12">
+        <div className="glass border border-white/5 rounded-4xl p-10 space-y-10 relative overflow-hidden group">
+          <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-gold/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
+          
+          <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+            <div className="h-10 w-10 glass rounded-xl flex items-center justify-center border border-white/10 text-gold/60">
+              <Info size={20} />
+            </div>
+            <div>
+              <h2 className="text-xl font-serif italic text-white">Artifact <span className="text-gold">Essence</span></h2>
+              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 mt-1">Core Identity & Revelation</p>
+            </div>
           </div>
           
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-zinc-400 ml-1">Product Name</label>
-            <input 
-              {...register("name")}
-              className={`w-full bg-black/60 border ${errors.name ? 'border-red-500' : 'border-white/10'} rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-inner`}
-              placeholder="e.g., Premium Leather Jacket"
-            />
-            {errors.name && <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{errors.name.message}</p>}
-          </div>
+          <div className="space-y-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em] ml-1">Vessel Name</label>
+              <input 
+                {...register("name")}
+                className={`w-full bg-black/40 border ${errors.name ? 'border-red-500/50' : 'border-white/5'} rounded-2xl p-5 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 transition-all shadow-2xl font-light tracking-wide`}
+                placeholder="The Eternal Rudraksha"
+              />
+              {errors.name && <p className="text-red-500 text-[9px] mt-1 ml-1 font-bold uppercase tracking-widest">{errors.name.message}</p>}
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-zinc-400 ml-1">Description</label>
-            <textarea 
-              {...register("description")}
-              rows={5}
-              className="w-full bg-black/60 border border-white/10 rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-inner resize-none"
-              placeholder="Describe the product..."
-            />
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em] ml-1">Description of Presence</label>
+              <textarea 
+                {...register("description")}
+                rows={6}
+                className="w-full bg-black/40 border border-white/5 rounded-2xl p-5 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 transition-all shadow-2xl font-light tracking-wide resize-none"
+                placeholder="Relate the spiritual properties and divine origin..."
+              />
+            </div>
           </div>
         </div>
 
-        <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-8">
-          <div className="flex items-center gap-3 mb-8">
-            <Layers size={18} className="text-zinc-500" />
-            <h2 className="text-lg font-bold">Inventory & Pricing</h2>
+        <div className="glass border border-white/5 rounded-4xl p-10 space-y-10 relative overflow-hidden group">
+          <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-gold/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
+          
+          <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+            <div className="h-10 w-10 glass rounded-xl flex items-center justify-center border border-white/10 text-gold/60">
+              <Layers size={20} />
+            </div>
+            <div>
+              <h2 className="text-xl font-serif italic text-white">Manifestation <span className="text-gold">Exchange</span></h2>
+              <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 mt-1">Value & Availability in the Realm</p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-zinc-400 ml-1">Price (USD)</label>
-              <div className="relative group">
-                <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600 group-hover:text-white transition-colors" size={18} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em] ml-1">Energy Required (USD)</label>
+              <div className="relative group/price">
+                <DollarSign className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700 group-focus-within/price:text-gold transition-colors" size={18} />
                 <input 
                   {...register("price", { valueAsNumber: true })}
                   type="number"
                   step="0.01"
-                  className={`w-full bg-black/60 border ${errors.price ? 'border-red-500' : 'border-white/10'} rounded-2xl p-4 pl-12 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-inner`}
-                  placeholder="29.99"
+                  className={`w-full bg-black/40 border ${errors.price ? 'border-red-500/50' : 'border-white/5'} rounded-2xl p-5 pl-12 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 transition-all shadow-2xl font-light tracking-wide`}
+                  placeholder="0.00"
                 />
               </div>
-              {errors.price && <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{errors.price.message}</p>}
+              {errors.price && <p className="text-red-500 text-[9px] mt-1 ml-1 font-bold uppercase tracking-widest">{errors.price.message}</p>}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-zinc-400 ml-1">Initial Stock</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em] ml-1">Manifested Units</label>
               <input 
                 {...register("stock", { valueAsNumber: true })}
                 type="number"
-                className={`w-full bg-black/60 border ${errors.stock ? 'border-red-500' : 'border-white/10'} rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-inner`}
+                className={`w-full bg-black/40 border ${errors.stock ? 'border-red-500/50' : 'border-white/5'} rounded-2xl p-5 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 transition-all shadow-2xl font-light tracking-wide`}
                 placeholder="0"
               />
-              {errors.stock && <p className="text-red-500 text-xs mt-1 ml-1 font-medium">{errors.stock.message}</p>}
+              {errors.stock && <p className="text-red-500 text-[9px] mt-1 ml-1 font-bold uppercase tracking-widest">{errors.stock.message}</p>}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="space-y-8">
-          <div className="bg-zinc-900/50 border border-white/10 rounded-3xl p-8 space-y-8">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <ImageIcon size={18} className="text-zinc-500" />
-                <h2 className="text-lg font-bold">Media Assets</h2>
+      <div className="space-y-12">
+          <div className="glass border border-white/5 rounded-4xl p-10 space-y-10 sticky top-32">
+            <div className="space-y-8">
+              <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                <div className="h-10 w-10 glass rounded-xl flex items-center justify-center border border-white/10 text-gold/60">
+                  <ImageIcon size={20} />
+                </div>
+                <div>
+                  <h2 className="text-xl font-serif italic text-white">Visual <span className="text-gold">Projection</span></h2>
+                  <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 mt-1">Artwork of the Item</p>
+                </div>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div 
-                  className="aspect-square w-full bg-black/40 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group hover:border-white/20 transition-all cursor-pointer"
+                  className="aspect-square w-full bg-black/40 border-2 border-dashed border-white/5 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group hover:border-gold/20 transition-all duration-700 cursor-pointer shadow-inner"
                   onClick={() => document.getElementById('image-upload')?.click()}
                 >
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(212,175,55,0.03),transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                  
                   {isUploading ? (
-                    <div className="flex flex-col items-center">
-                      <Loader2 className="animate-spin text-gold mb-2" size={32} />
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Uploading...</p>
+                    <div className="flex flex-col items-center gap-4 relative z-10">
+                      <Loader2 className="animate-spin text-gold" size={32} />
+                      <p className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Harmonizing...</p>
                     </div>
                   ) : watch("imageUrl") ? (
                     <>
@@ -218,20 +242,20 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
                         alt="Preview" 
                         fill
                         unoptimized
-                        className="object-cover transition-transform duration-500 group-hover:scale-110" 
+                        className="object-cover transition-transform duration-1000 group-hover:scale-110" 
                       />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="text-xs font-bold uppercase tracking-widest text-white">Change Image</span>
+                      <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center backdrop-blur-sm">
+                        <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-gold">Modify Projection</span>
                       </div>
                     </>
                   ) : (
-                    <>
-                      <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center mb-4 border border-white/5 group-hover:scale-110 transition-transform">
-                        <ImageIcon className="text-zinc-500" size={24} />
+                    <div className="flex flex-col items-center relative z-10 text-center px-6">
+                      <div className="h-16 w-16 glass rounded-2xl flex items-center justify-center mb-6 border border-white/5 group-hover:scale-110 group-hover:border-gold/20 transition-all duration-700">
+                        <ImageIcon className="text-zinc-600 group-hover:text-gold transition-colors duration-700" size={24} />
                       </div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Upload Artwork</p>
-                      <p className="text-[10px] text-zinc-600 mt-2">JPG, PNG or WEBP (Max 5MB)</p>
-                    </>
+                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Reveal Artwork</p>
+                      <p className="text-[8px] text-zinc-700 mt-2 font-bold uppercase tracking-widest">Divine Resolution (Max 5MB)</p>
+                    </div>
                   )}
                   <input 
                     id="image-upload"
@@ -261,8 +285,9 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
                         }
 
                         setValue("imageUrl", result.url, { shouldValidate: true });
-                      } catch (err: any) {
-                        setError(err.message);
+                      } catch (err: unknown) {
+                        if (err instanceof Error) setError(err.message);
+                        else setError("Upload failed");
                       } finally {
                         setIsUploading(false);
                       }
@@ -270,74 +295,75 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Server Path / URL</label>
+                <div className="space-y-3">
+                  <label className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.3em] ml-1">Universal Path</label>
                   <input 
                     {...register("imageUrl")}
-                    className={`w-full bg-black/60 border ${errors.imageUrl ? 'border-red-500' : 'border-white/5'} rounded-xl p-3 text-xs focus:outline-none focus:ring-2 focus:ring-white/10 transition-all`}
-                    placeholder="/uploads/..."
+                    className={`w-full bg-black/40 border ${errors.imageUrl ? 'border-red-500/50' : 'border-white/5'} rounded-xl p-4 text-[10px] text-white focus:outline-none focus:border-gold/20 transition-all font-mono opacity-60 hover:opacity-100 focus:opacity-100`}
+                    placeholder="/sacred/artifact.jpg"
                   />
-                  {errors.imageUrl && <p className="text-red-500 text-[10px] mt-1 ml-1 font-bold">{errors.imageUrl.message}</p>}
+                  {errors.imageUrl && <p className="text-red-500 text-[9px] mt-1 ml-1 font-bold uppercase tracking-widest">{errors.imageUrl.message}</p>}
                 </div>
               </div>
             </div>
 
-            <div className="pt-8 border-t border-white/5 space-y-4">
-               <div className="flex items-center justify-between">
+            <div className="pt-10 border-t border-white/5 space-y-10">
+               <div className="flex items-center justify-between group/toggle cursor-pointer" onClick={() => setValue("isActive", !watch("isActive"), { shouldValidate: true })}>
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold">Published State</span>
-                    <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest mt-1">Live in catalog</span>
+                    <span className="text-xs font-bold text-zinc-200 group-hover:text-white transition-colors">Manifested State</span>
+                    <span className="text-[8px] text-zinc-600 uppercase font-bold tracking-[0.4em] mt-1 group-hover:text-gold/60 transition-colors">
+                      {watch("isActive") ? "Visible in Realm" : "Hidden in Ether"}
+                    </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setValue("isActive", !watch("isActive"), { shouldValidate: true })}
-                    className={`h-6 w-11 rounded-full p-1 transition-all duration-300 relative ${watch("isActive") ? 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.3)]' : 'bg-zinc-800'}`}
+                  <div
+                    className={`h-6 w-11 rounded-full p-1 transition-all duration-500 relative ${watch("isActive") ? 'bg-gold shadow-[0_0_15px_rgba(212,175,55,0.3)]' : 'bg-zinc-900 border border-white/5'}`}
                   >
-                    <div className={`h-4 w-4 bg-white rounded-full transition-all duration-300 ${watch("isActive") ? 'ml-5' : 'ml-0'}`} />
-                  </button>
+                    <div className={`h-4 w-4 bg-white rounded-full transition-all duration-500 shadow-xl ${watch("isActive") ? 'ml-5' : 'ml-0'}`} />
+                  </div>
                </div>
-            </div>
 
-            <div className="space-y-3">
-              <button 
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all shadow-xl shadow-white/5 disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="animate-spin" size={20} />
-                ) : (
-                  <>
-                    <Save size={20} className="group-hover:scale-110 transition-transform" />
-                    <span>{isEdit ? "Save Modifications" : "Publish to Store"}</span>
-                  </>
-                )}
-              </button>
-
-              {isEdit && (
+              <div className="space-y-4">
                 <button 
-                  type="button"
-                  onClick={handleDelete}
-                  className="w-full bg-red-500/10 text-red-500 py-4 rounded-2xl font-bold flex items-center justify-center gap-3 hover:bg-red-500/20 border border-red-500/20 transition-all group active:scale-95"
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-white text-black py-5 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-gold transition-all duration-500 shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed group active:scale-95 overflow-hidden relative"
                 >
-                  <Trash2 size={20} className="group-hover:rotate-12 transition-transform" />
-                  <span>Archive & Delete</span>
+                  <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                  {isSubmitting ? (
+                    <Loader2 className="animate-spin" size={20} />
+                  ) : (
+                    <>
+                      <Save size={18} className="group-hover:scale-110 transition-transform duration-500" />
+                      <span>{isEdit ? "Harden Modification" : "Release to World"}</span>
+                    </>
+                  )}
                 </button>
-              )}
-            </div>
-          </div>
 
-        {(success || error) && (
-          <div className={`p-6 rounded-3xl border flex items-start gap-4 animate-in slide-in-from-top-4 duration-500 ${success ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-red-500/10 border-red-500/20 text-red-500'}`}>
-            {success ? <CheckCircle2 size={24} className="shrink-0" /> : <AlertCircle size={24} className="shrink-0" />}
-            <div className="flex flex-col">
-              <span className="font-bold">{success ? "Success!" : "Action Failed"}</span>
-              <span className="text-xs font-medium mt-1 leading-relaxed">
-                {success ? `The product has been ${isEdit ? 'updated' : 'added'}. Redirecting...` : error}
-              </span>
+                {isEdit && (
+                  <button 
+                    type="button"
+                    onClick={handleDelete}
+                    className="w-full bg-red-500/5 text-red-500/60 py-5 rounded-2xl font-bold text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-red-500 hover:text-white border border-red-500/10 hover:border-red-500 transition-all duration-500 group active:scale-95"
+                  >
+                    <Trash2 size={18} className="group-hover:rotate-12 transition-transform duration-500" />
+                    <span>Return to Void</span>
+                  </button>
+                )}
+              </div>
             </div>
+
+            {(success || error) && (
+              <div className={`p-6 rounded-3xl border flex items-start gap-4 animate-in slide-in-from-top-4 duration-700 ${success ? 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400' : 'bg-red-500/5 border-red-500/20 text-red-400'}`}>
+                {success ? <CheckCircle2 size={20} className="shrink-0 mt-0.5" /> : <AlertCircle size={20} className="shrink-0 mt-0.5" />}
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em]">{success ? "Divine Success" : "Disturbance Found"}</span>
+                  <span className="text-[10px] font-medium leading-relaxed opacity-80">
+                    {success ? `The artifact has been successfully ${isEdit ? 'refined' : 'manifested'}.` : error}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
-        )}
       </div>
     </form>
   );

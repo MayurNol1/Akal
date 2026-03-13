@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ProductService } from "@/modules/products/product.service";
-import { ShoppingBag, Star, Eye } from "lucide-react";
+import { ProductService } from "@/modules/products/service";
+import { ShoppingBag } from "lucide-react";
+import { Product } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -9,45 +10,45 @@ export default async function ProductListingPage() {
   const products = await ProductService.getProducts({ isActive: true });
 
   return (
-    <div className="bg-black min-h-screen pb-24">
+    <div className="bg-black text-white min-h-screen pb-40">
       {/* Header Spacer */}
-      <div className="h-24" />
+      <div className="h-32" />
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-          <div className="space-y-4 animate-in fade-in slide-in-from-left-4 duration-1000">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass border border-gold/20 text-gold text-[10px] font-bold uppercase tracking-widest">
-              Sacred Inventory
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold italic gold-gradient tracking-tight">
-              Akaal Collection
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-24 gap-12">
+          <div className="space-y-6 animate-fade-in max-w-2xl">
+            <div className="h-1 w-20 bg-gold/50" />
+            <h1 className="text-6xl md:text-7xl font-serif italic tracking-tight leading-tight bg-linear-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent transform -translate-x-1">
+              Sacred <span className="gold-gradient">Collections</span>
             </h1>
-            <p className="text-zinc-500 max-w-xl text-lg leading-relaxed font-medium">
-              Carefully curated spiritual artifacts, harvested and crafted with intention 
-              to support your journey toward inner clarity.
+            <p className="text-zinc-500 text-xl font-light leading-relaxed tracking-wide">
+              Ancient artifacts and high-vibration tools curated from the high peaks of the Himalayas to the deep temples of the South.
             </p>
           </div>
           
-          <div className="glass px-6 py-3 rounded-2xl border border-white/5 flex items-center gap-4 text-xs font-bold text-zinc-400">
-            <span>{products.length} Products Found</span>
-            <div className="w-px h-4 bg-white/10" />
-            <select className="bg-transparent border-none focus:outline-none text-zinc-200 cursor-pointer">
-              <option>Newest Arrivals</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
+          <div className="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-600">
+            <div className="flex items-center gap-3">
+              <span className="text-zinc-400">{products.length}</span> Objects Manifested
+            </div>
+            <div className="w-px h-6 bg-white/5" />
+            <select className="bg-transparent border-none focus:outline-none text-zinc-400 hover:text-gold transition-colors cursor-pointer appearance-none">
+              <option>Newest Rituals</option>
+              <option>Ascending Price</option>
+              <option>Descending Price</option>
             </select>
           </div>
         </div>
 
         {products.length === 0 ? (
-          <div className="h-[40vh] flex flex-col items-center justify-center glass rounded-[4rem] border border-white/5 space-y-6">
-            <div className="h-16 w-16 bg-white/5 rounded-3xl flex items-center justify-center">
-              <ShoppingBag className="text-zinc-600" size={32} />
-            </div>
-            <p className="text-zinc-500 font-medium">The collection is currently quiet. Check back soon.</p>
+          <div className="h-[40vh] flex flex-col items-center justify-center glass rounded-4xl border border-white/5 space-y-10 group">
+             <div className="relative">
+                <div className="absolute inset-0 bg-gold/20 blur-2xl rounded-full scale-150 group-hover:scale-200 transition-transform duration-1000" />
+                <ShoppingBag className="text-gold/40 relative z-10" size={60} strokeWidth={1} />
+             </div>
+             <p className="text-zinc-600 font-serif italic text-2xl tracking-widest">Your vessel is empty. Begin your journey.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-12 gap-y-24">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -58,60 +59,54 @@ export default async function ProductListingPage() {
   );
 }
 
-function ProductCard({ product }: { product: any }) {
+function ProductCard({ product }: { product: Product }) {
+  const price = parseFloat(product.price.toString()).toFixed(2);
+  
   return (
-    <div className="group space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="aspect-4/5 w-full relative overflow-hidden rounded-[3rem] border border-white/10 glass transition-all duration-500 group-hover:border-gold/20 group-hover:shadow-[0_0_30px_rgba(212,175,55,0.05)]">
+    <div className="group space-y-8 animate-fade-in cursor-pointer">
+      <div className="aspect-3/4 w-full relative overflow-hidden rounded-4xl border border-white/5 bg-zinc-900 shadow-2xl transition-all duration-700 hover:border-gold/30 hover:shadow-[0_0_40px_rgba(212,175,55,0.05)]">
         <Image 
-          src={product.imageUrl || "/spiritual_products_hero_1773122562782.png"} 
+          src={product.imageUrl || "/images/rudraksha.png"} 
           alt={product.name} 
           fill 
-          className="object-cover transition-transform duration-1000 group-hover:scale-110" 
+          className="object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100" 
         />
         
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700 flex flex-col items-center justify-end p-10 space-y-4">
           <Link 
             href={`/products/${product.id}`}
-            className="h-12 w-12 bg-white text-black rounded-full flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl"
+            className="w-full bg-white text-black py-4 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] text-center hover:bg-zinc-200 transition-colors shadow-2xl"
           >
-            <Eye size={20} />
+            Observe Details
           </Link>
-          <button className="h-12 px-6 bg-gold text-black rounded-full text-xs font-bold leading-none hover:scale-110 active:scale-95 transition-all shadow-xl flex items-center gap-2">
-            <ShoppingBag size={18} />
+          <button className="w-full bg-gold text-black py-4 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] shadow-2xl hover:bg-gold-light transition-colors">
             Add to Ritual
           </button>
         </div>
 
         {product.stock <= 5 && product.stock > 0 && (
-          <div className="absolute top-6 left-6 bg-saffron text-black px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-            Few Left
+          <div className="absolute top-8 right-8 bg-saffron text-black px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] shadow-[0_0_20px_rgba(255,153,51,0.3)]">
+            Rare Offering
           </div>
         )}
         
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] flex items-center justify-center">
-             <span className="text-white/40 text-xs font-bold uppercase tracking-[0.3em] border border-white/10 px-6 py-2 rounded-full">Coming Soon</span>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-[2px] flex items-center justify-center">
+             <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-[0.4em] border border-white/5 px-8 py-3 rounded-full">Transcending State</span>
           </div>
         )}
       </div>
 
-      <div className="px-2 space-y-2">
-        <div className="flex justify-between items-start gap-4">
-          <h3 className="text-lg font-bold leading-tight group-hover:text-gold transition-colors duration-300">
-            {product.name}
-          </h3>
-          <span className="text-gold font-bold text-lg whitespace-nowrap">
-            ${parseFloat(product.price.toString()).toFixed(2)}
-          </span>
-        </div>
-        
-        <div className="flex items-center gap-1.5 overflow-hidden">
-          <div className="flex items-center gap-0.5">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={10} className="fill-gold text-gold" />
-            ))}
-          </div>
-          <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest ml-1">Verified Origin</span>
+      <div className="px-2 text-center space-y-3">
+        <h3 className="text-2xl font-serif italic tracking-wide group-hover:text-gold transition-colors duration-500">
+          {product.name}
+        </h3>
+        <div className="flex flex-col items-center gap-3">
+           <span className="text-gold font-light text-base tracking-[0.2em]">
+             ${price}
+           </span>
+           <div className="w-8 h-px bg-white/10 group-hover:w-20 group-hover:bg-gold/40 transition-all duration-700" />
+           <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.4em]">Ancient Lineage</p>
         </div>
       </div>
     </div>

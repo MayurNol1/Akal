@@ -1,4 +1,4 @@
-import { ProductService } from "@/modules/products/product.service";
+import { ProductService } from "@/modules/products/service";
 import Link from "next/link";
 import { Plus, Search, Filter, Edit2, Trash2, Eye, Package } from "lucide-react";
 import Image from "next/image";
@@ -7,104 +7,108 @@ export default async function AdminProductsPage() {
   const products = await ProductService.getProducts();
 
   return (
-    <div className="space-y-10 animate-fade-in">
-      <header className="flex justify-between items-end">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight text-white mb-2">Inventory Catalog</h1>
-          <p className="text-zinc-500 font-medium">Manage your products, visibility, and stock levels.</p>
+    <div className="space-y-16 animate-fade-in relative z-10">
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-10">
+        <div className="space-y-4">
+           <div className="h-px w-12 bg-gold/50" />
+           <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-zinc-600">Sacred Inventory Hub</p>
+           <h1 className="text-5xl font-serif italic gold-gradient tracking-tight">Artifact <span className="text-white">Vault</span></h1>
         </div>
         <Link 
           href="/admin/products/create"
-          className="bg-white text-black px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-zinc-200 transition-all shadow-lg active:scale-95"
+          className="bg-white text-black px-8 py-4 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-gold transition-all duration-500 shadow-2xl active:scale-95 whitespace-nowrap"
         >
-          <Plus size={20} />
-          Create Product
+          <Plus size={16} />
+          Create New Offering
         </Link>
       </header>
 
       {/* Filter Bar */}
-      <div className="flex gap-4 items-center bg-zinc-900/50 border border-white/10 p-4 rounded-2xl">
-        <div className="relative flex-1 group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-hover:text-white transition-colors" size={18} />
+      <div className="flex flex-col md:flex-row gap-6 items-center">
+        <div className="relative flex-1 group w-full">
+          <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-zinc-600 group-hover:text-gold transition-colors duration-500" size={18} />
           <input 
             type="text" 
-            placeholder="Search products by name or SKU..."
-            className="w-full bg-black/40 border border-white/5 rounded-xl py-2.5 pl-11 pr-4 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-sm"
+            placeholder="Search artifacts by name or vibration..."
+            className="w-full bg-zinc-950/50 border border-white/5 rounded-2xl py-4 pl-14 pr-6 focus:outline-none focus:border-gold/30 transition-all text-xs font-medium placeholder:text-zinc-800"
           />
         </div>
-        <button className="bg-white/5 hover:bg-white/10 border border-white/5 p-2.5 rounded-xl transition-all">
-          <Filter size={18} className="text-zinc-400 hover:text-white" />
-        </button>
+        <div className="flex gap-4 w-full md:w-auto">
+           <div className="glass px-6 py-4 rounded-2xl border border-white/5 flex items-center gap-4 text-[10px] font-bold text-zinc-600 uppercase tracking-widest cursor-pointer hover:border-white/10 transition-colors w-full md:w-auto whitespace-nowrap">
+              <Filter size={16} />
+              Filter Essences
+           </div>
+        </div>
       </div>
 
       {/* Product Table */}
-      <div className="bg-zinc-950 border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+      <div className="glass border border-white/5 rounded-4xl overflow-hidden shadow-2xl transition-all duration-700 hover:border-gold/5">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-zinc-900/80 border-b border-white/10 text-left text-xs uppercase tracking-widest text-zinc-500">
-              <th className="px-8 py-5 font-bold">Product Details</th>
-              <th className="px-8 py-5 font-bold">Category</th>
-              <th className="px-8 py-5 font-bold">Status</th>
-              <th className="px-8 py-5 font-bold text-right">Price / Stock</th>
-              <th className="px-8 py-5 font-bold text-center">Actions</th>
+            <tr className="bg-white/5 border-b border-white/5 text-left text-[9px] uppercase tracking-[0.4em] text-zinc-600">
+              <th className="px-10 py-6 font-bold">Artifact Details</th>
+              <th className="px-10 py-6 font-bold">Category</th>
+              <th className="px-10 py-6 font-bold">Vibration</th>
+              <th className="px-10 py-6 font-bold text-right">Investment / Stock</th>
+              <th className="px-10 py-6 font-bold text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-white/5 transition-colors group">
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="h-14 w-14 bg-zinc-900 border border-white/10 rounded-xl overflow-hidden relative shrink-0">
+              <tr key={product.id} className="hover:bg-white/5 transition-all duration-500 group">
+                <td className="px-10 py-8">
+                  <div className="flex items-center gap-6">
+                    <div className="h-16 w-16 glass border border-white/5 rounded-2xl overflow-hidden relative shrink-0 group-hover:scale-110 group-hover:border-gold/20 transition-all duration-500">
                       {product.imageUrl ? (
                         <Image 
                           src={product.imageUrl} 
                           alt={product.name} 
                           fill 
-                          className="object-cover group-hover:scale-110 transition-transform duration-500" 
+                          className="object-cover opacity-90 group-hover:opacity-100" 
                         />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-zinc-700">
-                          <Package size={24} />
+                        <div className="w-full h-full flex items-center justify-center text-zinc-800 group-hover:text-gold/40 transition-colors">
+                          <Package size={24} strokeWidth={1} />
                         </div>
                       )}
                     </div>
-                    <div>
-                      <h4 className="font-bold text-white group-hover:underline underline-offset-4 decoration-zinc-600 truncate max-w-[200px]">
+                    <div className="space-y-1">
+                      <h4 className="font-serif italic text-xl text-white group-hover:text-gold transition-colors duration-500">
                         {product.name}
                       </h4>
-                      <p className="text-xs text-zinc-500 mt-1 uppercase tracking-tight font-medium">#{product.id.slice(-8)}</p>
+                      <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em]">#{product.id.slice(-12).toUpperCase()}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-8 py-6">
-                  <span className="text-zinc-400 text-sm font-medium bg-white/5 px-3 py-1 rounded-full border border-white/5">
-                    {product.category?.name || "Uncategorized"}
+                <td className="px-10 py-8">
+                  <span className="text-[9px] font-bold uppercase tracking-[0.3em] text-zinc-500 glass px-4 py-1.5 rounded-full border border-white/5 group-hover:border-gold/10 transition-colors">
+                    {product.category?.name || "Ancient"}
                   </span>
                 </td>
-                <td className="px-8 py-6">
-                  <div className="flex items-center gap-2">
-                    <div className={`h-2 w-2 rounded-full ${product.isActive ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-zinc-700"}`} />
-                    <span className={`text-xs font-bold ${product.isActive ? "text-emerald-500" : "text-zinc-600"}`}>
-                      {product.isActive ? "ACTIVE" : "HIDDEN"}
+                <td className="px-10 py-8">
+                  <div className="flex items-center gap-3">
+                    <div className={`h-2 w-2 rounded-full ${product.isActive ? "bg-gold shadow-[0_0_10px_rgba(212,175,55,0.4)]" : "bg-zinc-800"}`} />
+                    <span className={`text-[9px] font-bold uppercase tracking-[0.3em] ${product.isActive ? "text-gold" : "text-zinc-700"}`}>
+                      {product.isActive ? "VIBRANT" : "DORMANT"}
                     </span>
                   </div>
                 </td>
-                <td className="px-8 py-6 text-right">
-                  <p className="font-bold text-white">${parseFloat(product.price.toString()).toFixed(2)}</p>
-                  <p className={`text-xs mt-1 font-bold ${product.stock <= 5 ? "text-amber-500" : "text-zinc-500"}`}>
-                    {product.stock} units
+                <td className="px-10 py-8 text-right">
+                  <p className="text-xl font-light text-white tracking-widest">${parseFloat(product.price.toString()).toFixed(2)}</p>
+                  <p className={`text-[9px] mt-2 font-bold uppercase tracking-[0.2em] ${product.stock <= 5 ? "text-saffron shadow-[0_0_8px_rgba(255,153,51,0.2)]" : "text-zinc-600"}`}>
+                    {product.stock} manifests left
                   </p>
                 </td>
-                <td className="px-8 py-6">
-                  <div className="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 -translate-x-2 group-hover:translate-x-0">
-                    <Link href={`/admin/products/edit/${product.id}`} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-white transition-all">
-                      <Edit2 size={16} />
+                <td className="px-10 py-8">
+                  <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-x-4 group-hover:translate-x-0">
+                    <Link href={`/admin/products/edit/${product.id}`} className="h-10 w-10 glass flex items-center justify-center rounded-xl text-zinc-600 hover:text-gold hover:border-gold/20 transition-all">
+                      <Edit2 size={14} />
                     </Link>
-                    <button className="p-2 hover:bg-red-500/20 rounded-lg text-zinc-400 hover:text-red-500 transition-all">
-                      <Trash2 size={16} />
+                    <button className="h-10 w-10 glass flex items-center justify-center rounded-xl text-zinc-600 hover:text-red-400 hover:border-red-400/20 transition-all">
+                      <Trash2 size={14} />
                     </button>
-                    <Link href={`/admin/products/view/${product.id}`} className="p-2 hover:bg-white/10 rounded-lg text-zinc-400 hover:text-zinc-100 transition-all">
-                      <Eye size={16} />
+                    <Link href={`/products/${product.id}`} className="h-10 w-10 glass flex items-center justify-center rounded-xl text-zinc-600 hover:text-white hover:border-white/20 transition-all">
+                      <Eye size={14} />
                     </Link>
                   </div>
                 </td>
@@ -114,10 +118,18 @@ export default async function AdminProductsPage() {
         </table>
         
         {products.length === 0 && (
-          <div className="p-20 flex flex-col items-center justify-center text-zinc-600 bg-black/40">
-            <Package size={64} className="mb-4 text-zinc-800" />
-            <p className="text-lg font-bold">No products found in your catalog.</p>
-            <p className="text-sm mt-2">Start by creating your first product listing.</p>
+          <div className="p-32 flex flex-col items-center justify-center text-center space-y-8 glass bg-black/40">
+            <div className="relative group">
+               <div className="absolute inset-0 bg-gold/5 blur-3xl rounded-full scale-150" />
+               <Package size={80} className="relative z-10 text-zinc-900" strokeWidth={0.5} />
+            </div>
+            <div className="space-y-2">
+               <p className="text-zinc-600 font-serif italic text-2xl tracking-widest">The vault is currently empty.</p>
+               <p className="text-[10px] text-zinc-700 font-bold uppercase tracking-[0.4em]">No artifacts have been forged yet</p>
+            </div>
+            <Link href="/admin/products/create" className="px-10 py-4 rounded-xl bg-white text-black text-[10px] font-bold uppercase tracking-[0.2em] shadow-2xl hover:bg-gold transition-all duration-500">
+               Begin Forging
+            </Link>
           </div>
         )}
       </div>

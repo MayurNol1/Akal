@@ -1,6 +1,6 @@
 import './globals.css';
-import { Providers } from "@/components/providers";
-import { Navbar } from "@/components/navbar";
+import { Providers } from "@/components/shared/providers";
+import { Navbar } from "@/components/layout/navbar";
 import { auth } from "@/auth";
 import { Playfair_Display, Inter } from 'next/font/google';
 

@@ -1,7 +1,7 @@
 import { successResponse, errorResponse, unauthorizedResponse } from "@/lib/api-responses";
 import { auth } from "@/auth";
-import { ProductService } from "@/modules/products/product.service";
-import { CreateProductSchema } from "@/modules/products/product.validation";
+import { ProductService } from "@/modules/products/service";
+import { CreateProductSchema } from "@/modules/products/validation";
 
 // GET /api/products - Get all products (Public)
 export async function GET(req: Request) {

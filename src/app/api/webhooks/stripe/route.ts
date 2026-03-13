@@ -40,54 +40,60 @@ export async function POST(req: NextRequest) {
       return new Response("Missing metadata", { status: 400 });
     }
 
-    await prisma.$transaction(async (tx) => {
-      const cart = await tx.cart.findUnique({
-        where: { id: cartId },
-        include: {
-          items: {
-            include: { product: true },
+    try {
+      await prisma.$transaction(async (tx) => {
+        const cart = await tx.cart.findUnique({
+          where: { id: cartId },
+          include: {
+            items: {
+              include: { product: true },
+            },
           },
-        },
-      });
+        });
 
-      if (!cart || cart.items.length === 0) {
-        return;
-      }
+        if (!cart || cart.items.length === 0) {
+          return;
+        }
 
-      const total = cart.items.reduce((sum, item) => {
-        const priceNumber = Number(item.product.price);
-        return sum + priceNumber * item.quantity;
-      }, 0);
+        const total = cart.items.reduce((sum, item) => {
+          const priceNumber = Number(item.product.price);
+          return sum + priceNumber * item.quantity;
+        }, 0);
 
-      const order = await tx.order.create({
-        data: {
-          userId,
-          total,
-          status: "PAID",
-          stripeSessionId,
-          items: {
-            create: cart.items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.product.price,
-            })),
+        const order = await tx.order.create({
+          data: {
+            userId,
+            total,
+            status: "PAID",
+            stripeSessionId,
+            items: {
+              create: cart.items.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                price: item.product.price,
+              })),
+            },
           },
-        },
+        });
+
+        // Sprint 3 Requirement: Clear cart after successful order
+        await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
+        // Optional: Keep the cart record but clear items, or delete the cart. 
+        // Usually keeping the cart is better but the previous code deleted it.
+        // Let's just clear items to be safe and avoid deleting the cart record if possible,
+        // but the previous code deleted the cart too. 
+        // Actually, deleting the cart record is fine as getOrCreateCart will recreate it.
+        await tx.cart.delete({ where: { id: cart.id } });
+
+        console.log("Created order from Stripe session", order.id);
       });
-
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
-      await tx.cart.delete({ where: { id: cart.id } });
-
-      console.log("Created order from Stripe session", order.id);
-    });
+    } catch (dbError) {
+      console.error("Database error during order creation:", dbError);
+      return new Response("Order creation failed", { status: 500 });
+    }
   }
 
   return new Response("ok", { status: 200 });
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 

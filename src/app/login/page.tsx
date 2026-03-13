@@ -2,12 +2,12 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, LoginInput } from "@/lib/schemas";
+import { LoginSchema, LoginInput } from "@/modules/auth/validation";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Mail, Lock, Loader2, AlertCircle, ArrowRight } from "lucide-react";
+import { Mail, Lock, Loader2, AlertCircle, ArrowRight, Sparkles } from "lucide-react";
 
 export default function LoginPage() {
   const { status } = useSession();
@@ -41,101 +41,100 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError("Invalid email or password. Please try again.");
+        setError("Your vessel credentials could not be verified.");
       } else {
         router.push("/dashboard");
         router.refresh();
       }
     } catch {
-      setError("An unexpected error occurred. Please try again.");
+      setError("Energy transit interrupted. Please re-enter.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Aggressive loading spinner removed to prevent hanging states.
-  // Redirection is handled silently in the background by useEffect.
-  // If we really want to show nothing while status === "loading", we can, 
-  // but showing the form is safer than a stuck spinner.
-
   return (
     <div className="relative isolate min-h-screen bg-black flex items-center justify-center p-6 overflow-hidden">
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 blur-[120px] rounded-full" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 blur-[120px] rounded-full" />
+      {/* Background Aesthetics */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-950/10 blur-[150px] rounded-full animate-breathe" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-gold/5 blur-[150px] rounded-full" />
       
-      <div className="w-full max-w-md animate-fade-in text-white">
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl shadow-2xl relative">
-          <div className="flex justify-center mb-8">
-            <div className="h-14 w-14 bg-linear-to-tr from-blue-500 to-purple-600 rounded-xl rotate-3 shadow-[0_0_30px_-5px_rgba(59,130,246,0.3)] flex items-center justify-center">
-              <Lock className="text-white w-7 h-7" />
+      <div className="w-full max-w-lg animate-fade-in text-white relative z-10">
+        <div className="glass border border-white/5 p-12 md:p-16 rounded-[3rem] shadow-2xl relative overflow-hidden group">
+          <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-gold/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
+          
+          <div className="flex justify-center mb-12">
+            <div className="h-20 w-20 glass rounded-3xl border border-white/10 flex items-center justify-center relative overflow-hidden group-hover:border-gold/30 transition-all duration-500 transform group-hover:rotate-6">
+              <Sparkles className="text-gold/40 w-10 h-10 group-hover:text-gold transition-colors duration-500" />
             </div>
           </div>
 
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-gray-400">
-              Welcome Back
+          <div className="text-center mb-12 space-y-4">
+            <div className="h-px w-12 bg-gold/50 mx-auto opacity-50" />
+            <h1 className="text-4xl md:text-5xl font-serif italic gold-gradient tracking-tight">
+              Identify <span className="text-white">Vessel</span>
             </h1>
-            <p className="text-gray-400 mt-2 text-sm">
-              Log in to access your Akaal dashboard.
+            <p className="text-zinc-600 font-bold uppercase tracking-[0.4em] text-[10px]">
+              Access the Sanctuary
             </p>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-xl flex items-center gap-3 text-sm animate-shake">
-                <AlertCircle className="w-5 h-5 shrink-0" />
+              <div className="bg-red-950/20 border border-red-500/20 text-red-400 px-5 py-4 rounded-2xl flex items-center gap-4 text-xs font-medium animate-shake">
+                <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
                 <p>{error}</p>
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">
-                Email Address
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.3em] ml-2">
+                Existence Mail
               </label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
+                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-gold transition-colors" />
                 <input
                   {...register("email")}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-12 py-3.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300"
-                  placeholder="name@example.com"
+                  className="w-full bg-zinc-950/50 border border-white/5 rounded-2xl px-14 py-5 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/30 transition-all duration-500 text-sm"
+                  placeholder="seeker@destiny.com"
                   autoComplete="email"
                 />
               </div>
               {errors.email && (
-                <p className="text-xs text-red-500/80 ml-1">{errors.email.message}</p>
+                <p className="text-[10px] text-red-500/60 ml-2 font-medium tracking-wide">{errors.email.message}</p>
               )}
             </div>
 
-            <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider ml-1">
-                Password
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.3em] ml-2">
+                Secret Attunement
               </label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 group-focus-within:text-blue-500 transition-colors" />
+                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-700 group-focus-within:text-gold transition-colors" />
                 <input
                   type="password"
                   {...register("password")}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-12 py-3.5 text-white placeholder:text-gray-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all duration-300"
+                  className="w-full bg-zinc-950/50 border border-white/5 rounded-2xl px-14 py-5 text-white placeholder:text-zinc-800 focus:outline-none focus:border-gold/30 focus:ring-1 focus:ring-gold/30 transition-all duration-500 text-sm"
                   placeholder="••••••••"
                   autoComplete="current-password"
                 />
               </div>
               {errors.password && (
-                <p className="text-xs text-red-500/80 ml-1">{errors.password.message}</p>
+                <p className="text-[10px] text-red-500/60 ml-2 font-medium tracking-wide">{errors.password.message}</p>
               )}
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-white hover:bg-gray-100 disabled:opacity-50 disabled:hover:bg-white text-black font-bold py-4 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-3 group relative overflow-hidden"
+              className="w-full bg-white hover:bg-gold disabled:opacity-50 text-black font-bold py-5 rounded-2xl shadow-2xl transition-all duration-700 flex items-center justify-center gap-4 group relative overflow-hidden mt-4"
             >
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.2em]">
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    Log In
+                    Enter Silence
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -143,15 +142,18 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <p className="text-center mt-8 text-gray-400 text-sm">
-            Don&apos;t have an account?{" "}
-            <Link 
-              href="/register" 
-              className="text-white font-semibold hover:text-blue-400 underline decoration-white/20 underline-offset-4 transition-colors"
-            >
-              Sign up free
-            </Link>
-          </p>
+          <footer className="mt-12 text-center space-y-6">
+             <div className="h-px w-8 bg-white/5 mx-auto" />
+             <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.2em]">
+               New to the path?{" "}
+               <Link 
+                 href="/register" 
+                 className="text-white hover:text-gold underline decoration-white/10 underline-offset-8 transition-all"
+               >
+                 Create Manifestation
+               </Link>
+             </p>
+          </footer>
         </div>
       </div>
     </div>

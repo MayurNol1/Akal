@@ -1,9 +1,9 @@
 import prisma from "@/lib/prisma";
-import { CreateProductInput, UpdateProductInput } from "./product.validation";
 import { Prisma } from "@prisma/client";
+import { CreateProductInput, UpdateProductInput } from "./validation";
 
-export class ProductService {
-  static async createProduct(data: CreateProductInput) {
+export class ProductRepository {
+  static async create(data: CreateProductInput) {
     return prisma.product.create({
       data: {
         ...data,
@@ -12,7 +12,7 @@ export class ProductService {
     });
   }
 
-  static async getProducts(filters?: { categoryId?: string; isActive?: boolean }) {
+  static async findMany(filters?: { categoryId?: string; isActive?: boolean }) {
     return prisma.product.findMany({
       where: filters,
       orderBy: { createdAt: "desc" },
@@ -20,20 +20,14 @@ export class ProductService {
     });
   }
 
-  static async getProductById(id: string) {
-    const product = await prisma.product.findUnique({
+  static async findById(id: string) {
+    return prisma.product.findUnique({
       where: { id },
       include: { category: true },
     });
-    
-    if (!product) {
-      throw new Error("Product not found");
-    }
-    
-    return product;
   }
 
-  static async updateProduct(id: string, data: UpdateProductInput) {
+  static async update(id: string, data: UpdateProductInput) {
     const { price, ...rest } = data;
     
     const updateData: Prisma.ProductUpdateInput = { 
@@ -47,7 +41,7 @@ export class ProductService {
     });
   }
 
-  static async deleteProduct(id: string) {
+  static async delete(id: string) {
     return prisma.product.delete({
       where: { id },
     });
