@@ -12,9 +12,11 @@ export class ProductRepository {
     });
   }
 
-  static async findMany(filters?: { categoryId?: string; isActive?: boolean }) {
+  static async findMany(filters?: { categoryId?: string; isActive?: boolean; limit?: number }) {
+    const { limit, ...where } = filters || {};
     return prisma.product.findMany({
-      where: filters,
+      where,
+      take: limit,
       orderBy: { createdAt: "desc" },
       include: { category: true },
     });

@@ -1,94 +1,136 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+"use client";
+
+import { useSession, signOut } from "next-auth/react";
+import { redirect, usePathname } from "next/navigation";
 import Link from "next/link";
 import { 
-  BarChart3, 
+  LayoutDashboard, 
   Package, 
   ShoppingBag, 
   Users, 
   Settings, 
-  ExternalLink,
-  ChevronRight,
-  House,
-  Eye
+  LogOut,
+  Sparkles,
+  Search,
+  Bell,
+  Menu,
+  ChevronRight
 } from "lucide-react";
-import { SidebarLogoutButton } from "@/components/admin/sidebar-logout-button";
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const { data: session, status } = useSession();
+  const pathname = usePathname();
 
-  if (!session || session.user.role !== "ADMIN") {
-    redirect("/login");
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <Sparkles className="text-primary animate-pulse" size={40} />
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated" || session?.user?.role !== "ADMIN") {
+    redirect("/");
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
-      {/* Overseer Sidebar */}
-      <aside className="w-72 border-r border-white/5 flex flex-col bg-zinc-950/50 backdrop-blur-2xl p-8 fixed h-full z-40">
-        <div className="mb-12 px-4 space-y-4">
-           <Link href="/">
-              <h1 className="text-3xl font-serif italic tracking-widest gold-gradient">Akaal</h1>
-           </Link>
-           <div className="px-4 py-1.5 bg-gold/5 border border-gold/20 rounded-full inline-flex items-center gap-2">
-              <Eye size={12} className="text-gold" />
-              <span className="text-[9px] text-gold uppercase font-black tracking-[0.3em]">Overseer Hub</span>
-           </div>
-        </div>
-
-        <nav className="flex-1 space-y-2">
-          <AdminNavItem href="/admin" icon={<BarChart3 size={18} />} label="Vibration Stats" />
-          <AdminNavItem href="/admin/products" icon={<Package size={18} />} label="Artifact Vault" />
-          <AdminNavItem href="/admin/orders" icon={<ShoppingBag size={18} />} label="Manifest Logs" />
-          <AdminNavItem href="/admin/users" icon={<Users size={18} />} label="Seekers" />
-          <AdminNavItem href="/admin/settings" icon={<Settings size={18} />} label="Core Settings" />
-          
-          <div className="pt-8 mt-8 border-t border-white/5 space-y-2">
-            <AdminNavItem href="/" icon={<House size={18} />} label="Temple Entrance" />
-            <AdminNavItem href="/dashboard" icon={<ExternalLink size={18} />} label="User Profile" />
+    <div className="min-h-screen bg-[#0a0a0a] text-white flex overflow-hidden">
+      {/* Sidebar from Stitch UI */}
+      <aside className="w-80 border-r border-white/5 flex flex-col p-10 space-y-12 max-lg:hidden bg-[#0f0e0b] relative z-20">
+        <Link href="/admin" className="flex items-center gap-4 group px-2">
+          <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 group-hover:border-primary/40 transition-all duration-500">
+             <Sparkles className="text-primary" size={20} />
           </div>
+          <div>
+            <h1 className="font-serif text-2xl font-black tracking-tighter text-white uppercase group-hover:text-primary transition-colors">AKAAL</h1>
+            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-primary/60 -mt-1">Control Hub</p>
+          </div>
+        </Link>
+
+        <nav className="flex-1 space-y-3">
+          <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.5em] mb-6 ml-2">Administrative Path</p>
+          <AdminNavItem href="/admin" icon={<LayoutDashboard size={20} />} label="Zen Overview" active={pathname === "/admin"} />
+          <AdminNavItem href="/admin/products" icon={<Package size={20} />} label="Artifact Vault" active={pathname.startsWith("/admin/products")} />
+          <AdminNavItem href="/admin/orders" icon={<ShoppingBag size={20} />} label="Manifest Logs" active={pathname.startsWith("/admin/orders")} />
+          <AdminNavItem href="/admin/users" icon={<Users size={20} />} label="Seeker Registry" active={pathname === "/admin/users"} />
+          <AdminNavItem href="/admin/settings" icon={<Settings size={20} />} label="Core Settings" active={pathname === "/admin/settings"} />
         </nav>
 
-        <div className="mt-auto space-y-6">
-          <SidebarLogoutButton />
-          <div className="p-5 bg-white/5 rounded-2xl border border-white/5 space-y-1 group">
-            <p className="text-[9px] text-zinc-600 font-bold uppercase tracking-[0.4em]">Administrator</p>
-            <p className="text-sm font-serif italic tracking-wide group-hover:text-gold transition-colors truncate">{session.user.name || session.user.email}</p>
-          </div>
+        <div className="pt-8 border-t border-white/5 space-y-6">
+           <div className="flex items-center gap-4 px-4">
+              <div className="size-10 rounded-xl bg-primary/10 border border-primary/20 p-1">
+                 <img src={session?.user?.image || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=100&auto=format&fit=crop"} alt="Admin" className="size-full object-cover rounded-lg grayscale" />
+              </div>
+              <div>
+                 <p className="text-[11px] font-black text-white italic">{session?.user?.name}</p>
+                 <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Grand Overseer</p>
+              </div>
+           </div>
+           <button 
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="flex items-center gap-4 w-full px-4 py-4 rounded-2xl text-zinc-600 hover:text-red-400 hover:bg-red-400/5 transition-all text-[10px] font-black uppercase tracking-widest"
+           >
+              <LogOut size={18} />
+              Sever Connection
+           </button>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 ml-72 min-h-screen flex flex-col relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,175,55,0.02),transparent_70%)] pointer-events-none" />
-        
-        {/* Subtle top indicator */}
-        <div className="h-px w-full bg-linear-to-r from-transparent via-gold/30 to-transparent opacity-50" />
-        
-        <div className="p-12 max-w-7xl mx-auto w-full relative z-10 animate-fade-in">
-          {children}
+      <main className="flex-1 flex flex-col min-w-0 bg-transparent overflow-y-auto">
+        <header className="h-24 border-b border-white/5 flex items-center justify-between px-12 bg-[#0a0a0a]/80 backdrop-blur-md sticky top-0 z-30">
+          <div className="flex items-center gap-6 flex-1 max-w-xl">
+             <div className="relative group w-full">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-600 group-hover:text-primary transition-colors" size={16} />
+                <input 
+                  type="text" 
+                  placeholder="Universal Search..." 
+                  className="w-full bg-white/2 border border-white/5 rounded-2xl py-3 pl-12 pr-6 focus:outline-none focus:border-primary/20 transition-all text-[11px] font-medium placeholder:text-zinc-800"
+                />
+             </div>
+          </div>
+
+          <div className="flex items-center gap-6">
+             <button className="h-12 w-12 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-center text-zinc-600 hover:text-primary hover:border-primary/20 transition-all relative">
+                <Bell size={18} />
+                <span className="absolute top-3 right-3 size-2 bg-primary rounded-full animate-pulse" />
+             </button>
+             <button className="lg:hidden h-12 w-12 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-center text-zinc-600">
+                <Menu size={20} />
+             </button>
+          </div>
+        </header>
+
+        <div className="p-12 relative">
+           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/2 blur-[150px] rounded-full pointer-events-none -mr-40 -mt-20" />
+           {children}
         </div>
       </main>
     </div>
   );
 }
 
-function AdminNavItem({ href, icon, label }: { href: string, icon: React.ReactNode, label: string }) {
+function AdminNavItem({ href, icon, label, active }: { href: string, icon: React.ReactNode, label: string, active: boolean }) {
   return (
     <Link 
       href={href}
-      className="flex items-center justify-between group px-5 py-4 rounded-xl transition-all duration-500 hover:glass text-zinc-500 hover:text-white hover:border-white/5 border border-transparent"
+      className={`flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-500 group ${
+        active 
+          ? "bg-primary text-background-dark shadow-2xl shadow-primary/20 translate-x-1" 
+          : "text-zinc-600 hover:text-white hover:bg-white/5"
+      }`}
     >
       <div className="flex items-center gap-4">
-        <div className="group-hover:text-gold transition-colors duration-500">
-           {icon}
-        </div>
-        <span className="font-bold text-[10px] uppercase tracking-[0.3em]">{label}</span>
+        <span className={`${active ? "text-background-dark scale-110" : "group-hover:text-primary transition-colors"} duration-500`}>
+          {icon}
+        </span>
+        <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
       </div>
-      <ChevronRight className="opacity-0 group-hover:opacity-40 group-hover:translate-x-1 transition-all duration-500" size={14} />
+      {active && <ChevronRight size={14} className="text-background-dark" />}
     </Link>
   );
 }

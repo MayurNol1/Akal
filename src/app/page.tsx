@@ -2,228 +2,218 @@ import Link from 'next/link';
 import Image from "next/image";
 import { 
   Sparkles, 
-  Compass, 
   ArrowRight,
-  ShieldCheck,
-  Leaf
+  Mail,
+  Share2,
+  Globe
 } from "lucide-react";
+
+import { ProductService } from "@/modules/products/service";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 
 export const dynamic = "force-dynamic";
 
+// Define a safe local type for featured products mapping
+type FeaturedProduct = {
+  id: string;
+  name: string;
+  price: number | { toString: () => string };
+  description: string | null;
+  imageUrl: string | null;
+};
+
 export default async function HomePage() {
+  const featuredProducts = await ProductService.getProducts({ isActive: true, limit: 3 });
+
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-background-dark text-white min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        {/* Hero Background */}
         <div className="absolute inset-0 z-0">
           <Image 
-            src="/images/hero.png" 
-            alt="The Eternal Path" 
+            src="https://images.unsplash.com/photo-1510250669225-3b91fa04db14?q=80&w=2070&auto=format&fit=crop" 
+            alt="Mystical Himalayan Mountains" 
             fill 
-            className="object-cover opacity-70 scale-100 animate-slow-zoom"
+            className="object-cover opacity-40 scale-100 animate-slow-zoom"
             priority
           />
-          <div className="absolute inset-0 bg-linear-to-b from-black/40 via-transparent to-black" />
-          {/* Cosmic Glow Overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent opacity-60" />
+          <div className="absolute inset-0 bg-linear-to-b from-background-dark/40 via-background-dark/60 to-background-dark" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#0a0907_100%)] opacity-60" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto space-y-10 animate-fade-in">
-          <div className="inline-flex items-center gap-3 px-6 py-2 rounded-full glass border-gold/20 text-gold text-[10px] font-bold uppercase tracking-[0.4em]">
-            <Sparkles size={14} className="animate-pulse" />
-            Transcending Time & Space
-          </div>
+        {/* Trishul Aura Backdrop */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5 pointer-events-none z-0">
+          <span className="material-symbols-outlined text-[600px] text-primary">architecture</span>
+        </div>
+
+        <div className="relative z-10 text-center px-6 max-w-4xl mx-auto space-y-8 animate-fade-in">
+          <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-4 block">Ethereal Collections</span>
           
-          <div className="space-y-4">
-            <h1 className="text-7xl md:text-9xl font-serif italic tracking-tighter leading-tight bg-linear-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+          <div className="space-y-6">
+            <h1 className="font-serif text-6xl md:text-8xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
               The Eternal <br /> 
-              <span className="gold-gradient">Path</span>
+              <span className="text-white">Path</span>
             </h1>
-            <p className="text-lg md:text-xl text-zinc-400 font-light max-w-2xl mx-auto leading-relaxed tracking-wide">
-              Hand-selected artifacts from the mystical lands of the Himalayas. 
-              Pure vibration, hand-crafted for the modern seeker.
+            <p className="text-slate-300 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto leading-relaxed tracking-wide">
+              Experience the divine essence of Lord Mahadev through our curated selection of premium spiritual artifacts and sacred instruments.
             </p>
           </div>
 
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-8">
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
             <Link
               href="/products"
-              className="relative rounded-full bg-white text-black px-12 py-5 text-xs font-bold uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:scale-105 transition-all duration-500 group overflow-hidden"
+              className="bg-primary text-background-dark font-bold px-10 py-5 rounded-xl hover:shadow-[0_0_20px_rgba(236,149,19,0.4)] transition-all transform hover:-translate-y-1 flex items-center gap-3 group text-xs uppercase tracking-widest text-center"
             >
-              <span className="relative z-10">Shop Collections</span>
-              <div className="absolute inset-0 bg-gold translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+              Shop Collections
+              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </Link>
             
             <Link
               href="/about"
-              className="text-xs font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-white transition-colors flex items-center gap-3 group"
+              className="bg-white/5 backdrop-blur-md border border-white/10 text-white font-bold px-10 py-5 rounded-xl hover:bg-white/10 transition-all text-xs uppercase tracking-widest text-center"
             >
-              Our Philosophy
-              <ArrowRight size={16} className="group-hover:translate-x-2 transition-transform duration-500" />
+              Our Story
             </Link>
           </div>
         </div>
         
-        {/* Decorative elements */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
-          <span className="text-[10px] uppercase tracking-[0.5em] text-zinc-600 font-bold">Scroll to Begin</span>
-          <div className="w-px h-12 bg-linear-to-b from-gold/40 to-transparent" />
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <span className="material-symbols-outlined text-slate-500 text-3xl">expand_more</span>
         </div>
       </section>
 
-      {/* Featured Collections Section */}
-      <section className="py-32 px-6 max-w-7xl mx-auto bg-black relative">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
-        
-        <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
+      {/* Featured Products Section */}
+      <section className="py-24 px-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4">
-            <div className="h-1 w-20 bg-gold/50" />
-            <h2 className="text-4xl md:text-5xl font-serif italic gold-gradient">
-              Sacred Artifacts
-            </h2>
-            <p className="text-zinc-500 max-w-md font-light tracking-wide">
-              Each piece is ethically sourced and energized to resonate with your higher self.
-            </p>
+            <h3 className="font-serif text-4xl font-bold text-white mb-4">Featured Sacred Collections</h3>
+            <div className="h-1.5 w-24 bg-primary rounded-full" />
           </div>
-          <Link href="/products" className="text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-500 hover:text-gold transition-all border-b border-zinc-800 pb-1">
-            View All Sacred Goods
+          <Link href="/products" className="text-primary font-bold flex items-center gap-2 hover:gap-4 transition-all uppercase text-[10px] tracking-widest">
+            View All Artifacts <ArrowRight size={16} />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-           <ProductCard 
-             image="/images/rudraksha.png" 
-             title="5-faced Himalayan Rudraksha" 
-             price="$108.00" 
-             category="Malas"
-           />
-           <ProductCard 
-             image="/images/lingam.png" 
-             title="Obsidian Shiva Lingam" 
-             price="$245.00"
-             category="Statues"
-           />
-           <ProductCard 
-             image="/images/hero.png" // Placeholder for now
-             title="Transcendent Incense Set" 
-             price="$45.00"
-             category="Aroma"
-           />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+           {featuredProducts.slice(0, 3).map((product: FeaturedProduct) => (
+             <ProductCard 
+               key={product.id}
+               id={product.id}
+               image={product.imageUrl || "https://lh3.googleusercontent.com/aida-public/AB6AXuBboiZGWGY25VY5ghi5zCQu-8-LW2SGbonewIxYNqbmWpZ8MMAREwVSOkOyLGpLs9MNzGtbM78ylOLxhGGlZ-nrGmmg2Lk7vLuG4z_NXgo-eQLeFEY0pkkTIzFmuSYG0b6054n2JA8HYW19DztyzSCHonr8UO1rNFCewnnfTi7qPJYvuLCKJEXdVYN5PSqApQnLKqrZwWU8AlvOGBJUzp_ECWYm0rHla7c4Ty_ue7lzKyBVy-urYbFz11wt47ZIqhWjSi3N58o_z0E"} 
+               title={product.name} 
+               price={`$${parseFloat(product.price.toString()).toFixed(2)}`} 
+               desc={product.description || "Authentic sacred item."}
+             />
+           ))}
         </div>
       </section>
 
-      {/* Philosophy Section */}
-      <section className="py-40 bg-zinc-950 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_0%_0%,rgba(212,175,55,0.05),transparent_50%)]" />
-        <div className="max-w-4xl mx-auto px-6 text-center space-y-12 relative z-10">
-          <Sparkles className="mx-auto text-gold/40" size={40} />
-          <h2 className="text-5xl md:text-6xl font-serif italic leading-snug">
-            &ldquo;Akaal is the timeless state where the seeker finds the source.&rdquo;
-          </h2>
-          <div className="w-24 h-px bg-gold/30 mx-auto" />
-          <p className="text-zinc-400 text-lg font-light leading-relaxed max-w-2xl mx-auto tracking-wide">
-            Inspired by the cosmic energy of Lord Mahadev, Akaal curate items that serve as gateways to tranquility. 
-            From the deep forests of the East to the high peaks of the North, we bring you the essence of divinity.
+      {/* Subscription Section */}
+      <section className="py-24 bg-primary/5 border-y border-primary/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(236,149,19,0.05),transparent_70%)] pointer-events-none" />
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-8 relative z-10">
+          <Sparkles className="mx-auto text-primary" size={48} />
+          <h2 className="font-serif text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">Join the Eternal Path</h2>
+          <p className="text-slate-400 text-lg mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+            Subscribe to receive spiritual insights, exclusive mantras, and early access to our most rare handcrafted collections.
           </p>
-        </div>
-      </section>
-
-      {/* Ritual Features */}
-      <section className="py-32 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-20">
-          <Feature icon={<ShieldCheck className="text-gold/60" size={28} />} title="Pure Lineage" desc="Every product carries a verified history of authenticity and spiritual charge." />
-          <Feature icon={<Compass className="text-gold/60" size={28} />} title="High Vibration" desc="Items are stored in sacred environments to maintain their natural energy." />
-          <Feature icon={<Leaf className="text-gold/60" size={28} />} title="Ethical Sourcing" desc="We work directly with artisans, ensuring fair trade and ecological respect." />
-      </section>
-
-      {/* Final Call to Action */}
-      <section className="py-40 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,rgba(30,58,138,0.1),transparent_70%)]" />
-        <div className="max-w-2xl mx-auto px-6 space-y-10 relative z-10">
-          <h2 className="text-5xl md:text-6xl font-serif">Begin Your Journey</h2>
-          <p className="text-zinc-500 font-light tracking-widest text-sm uppercase">Join the circle of seekers</p>
-          <div className="flex justify-center">
-            <Link href="/register" className="glass px-12 py-5 rounded-full text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-white hover:text-black transition-all duration-500">
-              Create Account
-            </Link>
-          </div>
+          <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input 
+              className="flex-1 bg-white/5 border border-white/10 rounded-xl px-6 py-4 focus:ring-1 focus:ring-primary focus:border-primary text-white outline-none" 
+              placeholder="Your celestial email" 
+              type="email"
+            />
+            <button className="bg-primary text-background-dark font-black px-8 py-4 rounded-xl hover:shadow-[0_0_20px_rgba(236,149,19,0.3)] transition-all whitespace-nowrap uppercase text-xs tracking-widest">
+              Subscribe Now
+            </button>
+          </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-24 border-t border-white/5 bg-black">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16 mb-20 text-left">
-          <div className="space-y-6">
-            <h3 className="text-2xl font-serif italic gold-gradient">Akaal</h3>
-            <p className="text-zinc-500 text-sm font-light leading-relaxed">
-              Curating high-vibration spiritual artifacts for the modern path. Eternal essence in every piece.
-            </p>
+      <footer className="bg-background-dark pt-24 pb-12 border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+            <div className="col-span-1 md:col-span-1 space-y-8">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-primary text-4xl">flare</span>
+                <h1 className="font-serif text-2xl font-black tracking-tighter text-white uppercase">AKAAL</h1>
+              </div>
+              <p className="text-slate-500 text-sm leading-relaxed font-light">
+                Dedicated to bringing the essence of spiritual ancient wisdom into the modern home through ethically sourced sacred artifacts.
+              </p>
+              <div className="flex gap-4">
+                <SocialIcon icon={<Globe size={18} />} />
+                <SocialIcon icon={<Mail size={18} />} />
+                <SocialIcon icon={<Share2 size={18} />} />
+              </div>
+            </div>
+            
+            <FooterColumn title="Shop" links={["Rudraksha", "Idols & Sculptures", "Crystals", "Meditation Mats"]} />
+            <FooterColumn title="Wisdom Center" links={["Meaning of Om", "Mahadev's Teachings", "Meditation Guide", "Ritual Instructions"]} />
+            <FooterColumn title="Support" links={["Shipping Policy", "Returns", "Privacy", "Contact Us"]} />
           </div>
-          <FooterLinks title="Explore" links={["Collections", "New Arrivals", "Best Sellers", "Ritual Sets"]} />
-          <FooterLinks title="Philosophy" links={["Our Origins", "The Mahadev Path", "Authenticity", "Contact"]} />
-          <FooterLinks title="Connect" links={["Instagram", "YouTube", "Twitter", "Community"]} />
-        </div>
-        <div className="max-w-7xl mx-auto px-6 pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-[10px] uppercase tracking-widest text-zinc-600 font-bold">© 2026 Akaal Spiritual E-commerce</p>
-          <p className="text-[10px] uppercase tracking-widest text-zinc-600 font-bold italic">Inspired by the Eternal</p>
+          
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-4 text-slate-600 text-[10px] font-bold uppercase tracking-widest">
+              <span>© 2026 Akaal Spiritual Collections. All rights reserved.</span>
+            </div>
+            <div className="flex items-center gap-6 opacity-30">
+              <span className="material-symbols-outlined text-4xl text-white">architecture</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
   );
 }
 
-function Feature({ icon, title, desc }: { icon: React.ReactNode, title: string, desc: string }) {
+function ProductCard({ id, image, title, price, desc }: { id: string, image: string, title: string, price: string, desc: string }) {
   return (
-    <div className="space-y-6 group">
-      <div className="h-16 w-16 glass rounded-2xl flex items-center justify-center border border-white/10 group-hover:border-gold/30 transition-all duration-500 group-hover:scale-110">
-        {icon}
-      </div>
-      <div className="space-y-3">
-        <h4 className="text-xl font-serif italic">{title}</h4>
-        <p className="text-sm text-zinc-500 leading-relaxed font-light tracking-wide">{desc}</p>
+    <div className="group relative bg-white/5 border border-primary/10 rounded-2xl p-5 transition-all hover:border-primary/40 hover:bg-white/10 flex flex-col items-center text-center">
+      <Link href={`/products/${id}`} className="aspect-square w-full rounded-xl overflow-hidden mb-6 bg-background-dark border border-white/5 relative block">
+        <Image 
+          src={image} 
+          alt={title} 
+          fill 
+          className="object-cover transition-transform duration-700 group-hover:scale-110" 
+        />
+      </Link>
+      <div className="w-full space-y-3">
+        <div className="flex justify-between items-center px-1">
+          <Link href={`/products/${id}`}>
+            <h4 className="text-xl font-serif font-bold text-white group-hover:text-primary transition-colors">{title}</h4>
+          </Link>
+          <span className="text-primary font-black text-lg">{price}</span>
+        </div>
+        <p className="text-slate-400 text-sm leading-relaxed font-light px-1 line-clamp-2">{desc}</p>
+        <div className="mt-4">
+           <AddToCartButton productId={id} />
+        </div>
       </div>
     </div>
   );
 }
 
-function FooterLinks({ title, links }: { title: string, links: string[] }) {
+function FooterColumn({ title, links }: { title: string, links: string[] }) {
   return (
-    <div className="space-y-6">
-      <h4 className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-400">{title}</h4>
-      <ul className="space-y-4">
-        {links.map((link) => (
-          <li key={link}>
-            <a href="#" className="text-sm text-zinc-600 hover:text-gold transition-colors font-light">{link}</a>
-          </li>
+    <div className="space-y-8">
+      <h5 className="text-white font-bold uppercase text-xs tracking-widest">{title}</h5>
+      <ul className="space-y-4 text-sm text-slate-500 font-light">
+        {links.map(link => (
+          <li key={link}><Link href="#" className="hover:text-primary transition-colors">{link}</Link></li>
         ))}
       </ul>
     </div>
   );
 }
 
-function ProductCard({ image, title, price, category }: { image: string, title: string, price: string, category: string }) {
+function SocialIcon({ icon }: { icon: React.ReactNode }) {
   return (
-    <div className="group space-y-6 cursor-pointer">
-      <div className="aspect-3/4 w-full relative overflow-hidden rounded-4xl border border-white/5 bg-zinc-900 shadow-2xl">
-        <Image 
-          src={image} 
-          alt={title} 
-          fill 
-          className="object-cover transition-transform duration-1000 group-hover:scale-110 opacity-90 group-hover:opacity-100" 
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
-        <div className="absolute bottom-8 left-8 right-8 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-          <button className="w-full bg-white text-black py-4 rounded-xl text-[10px] font-bold uppercase tracking-[0.2em] shadow-xl hover:bg-gold transition-colors">
-            Quick Acquire
-          </button>
-        </div>
-      </div>
-      <div className="space-y-2 px-2 text-center">
-        <p className="text-[9px] uppercase tracking-[0.4em] text-gold font-bold">{category}</p>
-        <h3 className="text-xl font-serif italic group-hover:text-gold transition-colors duration-500">{title}</h3>
-        <p className="text-sm font-light text-zinc-400 ">{price}</p>
-      </div>
-    </div>
+    <Link href="#" className="h-10 w-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-primary transition-colors border border-white/5 group">
+      {icon}
+    </Link>
   );
 }
-

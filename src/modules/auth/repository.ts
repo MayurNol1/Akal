@@ -12,7 +12,7 @@ export class AuthRepository {
     return prisma.user.create({
       data: {
         ...data,
-        role: data.role || "USER",
+        role: (data.role as any) || "USER",
       },
     });
   }

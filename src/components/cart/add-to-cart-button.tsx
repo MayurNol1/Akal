@@ -5,9 +5,10 @@ import { useState, useTransition } from "react";
 
 interface AddToCartButtonProps {
   productId: string;
+  variant?: "primary" | "minimal";
 }
 
-export function AddToCartButton({ productId }: AddToCartButtonProps) {
+export function AddToCartButton({ productId, variant = "primary" }: AddToCartButtonProps) {
   const [showToast, setShowToast] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -40,18 +41,28 @@ export function AddToCartButton({ productId }: AddToCartButtonProps) {
 
   return (
     <>
-      <button
-        onClick={handleClick}
-        disabled={isPending}
-        className="w-full bg-white text-black py-5 rounded-3xl font-bold flex items-center justify-center gap-3 hover:bg-zinc-200 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-2xl shadow-white/5 active:scale-95 group relative overflow-hidden"
-      >
-        <div className="absolute inset-x-0 bottom-0 h-1 bg-gold transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-        <ShoppingBag
-          size={20}
-          className="group-hover:rotate-12 transition-transform"
-        />
-        <span>{isPending ? "Adding..." : "Add to Ritual Collection"}</span>
-      </button>
+      {variant === "primary" ? (
+        <button
+          onClick={handleClick}
+          disabled={isPending}
+          className="w-full bg-primary text-background-dark py-5 rounded-xl font-bold flex items-center justify-center gap-3 hover:shadow-[0_0_20px_rgba(236,149,19,0.3)] disabled:opacity-60 disabled:cursor-not-allowed transition-all active:scale-95 group relative overflow-hidden uppercase text-xs tracking-widest shadow-xl"
+        >
+          <ShoppingBag
+            size={18}
+            className="group-hover:rotate-12 transition-transform"
+          />
+          <span>{isPending ? "Manifesting..." : "Add to Sacred Cart"}</span>
+        </button>
+      ) : (
+        <button 
+          onClick={handleClick}
+          disabled={isPending}
+          className="sacred-btn flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:text-white transition-all transform hover:scale-105 active:scale-95 group/btn shadow-xl shadow-primary/5 disabled:opacity-60 disabled:cursor-not-allowed z-20 relative"
+        >
+          <ShoppingBag size={14} className="group-hover/btn:rotate-12 transition-transform" />
+          {isPending ? "Manifesting" : "Acquire"}
+        </button>
+      )}
 
       {showToast && (
         <div className="fixed top-20 right-8 z-50 animate-in slide-in-from-right-5 fade-in duration-500">

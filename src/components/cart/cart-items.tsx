@@ -42,7 +42,7 @@ export function CartItems({ cart }: CartItemsProps) {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="flex flex-col">
       {cart.items.map((item) => {
         const priceNumber = Number(item.product.price);
         const lineTotal = priceNumber * item.quantity;
@@ -50,78 +50,65 @@ export function CartItems({ cart }: CartItemsProps) {
         return (
           <div
             key={item.id}
-            className="group relative flex flex-col md:flex-row gap-8 pb-12 border-b border-white/5 last:border-0"
+            className="flex items-center justify-between py-8 border-b border-white/5 group"
           >
-            <div className="relative h-48 w-full md:w-36 rounded-3xl overflow-hidden border border-white/5 bg-zinc-900 shadow-xl shrink-0">
-               <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent pointer-events-none" />
-               <Image
-                 src={
-                   item.product.imageUrl ||
-                   "/images/rudraksha.png"
-                 }
-                 alt={item.product.name}
-                 fill
-                 className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-90 group-hover:opacity-100"
-               />
-            </div>
-
-            <div className="flex-1 flex flex-col justify-between py-2">
-              <div className="space-y-4">
-                <div className="flex justify-between items-start gap-4">
-                  <div className="space-y-1">
-                     <p className="text-[9px] font-bold uppercase tracking-[0.4em] text-zinc-600">Sacred Artifact</p>
-                     <h3 className="font-serif italic text-2xl group-hover:text-gold transition-colors duration-500">
-                       {item.product.name}
-                     </h3>
-                  </div>
-                  <div className="text-right">
-                     <p className="text-xl font-light text-white tracking-wider">
-                       ${lineTotal.toFixed(2)}
-                     </p>
-                     <p className="text-[10px] text-zinc-600 font-bold uppercase tracking-[0.2em] mt-1">
-                        ${priceNumber.toFixed(2)} / unit
-                     </p>
-                  </div>
-                </div>
+            <div className="flex items-center gap-8">
+              <div className="relative h-24 w-24 rounded-full overflow-hidden ring-2 ring-primary/20 bg-background-dark p-1 shrink-0">
+                <Image
+                  src={item.product.imageUrl || "/images/rudraksha.png"}
+                  alt={item.product.name}
+                  fill
+                  className="object-cover rounded-full p-2 contrast-110"
+                />
               </div>
 
-              <div className="flex items-center justify-between mt-8">
-                <div className="flex items-center gap-1 glass rounded-xl p-1 border border-white/5">
-                  <button
-                    type="button"
-                    disabled={isPending || item.quantity <= 1}
-                    onClick={() =>
-                      handleUpdateQuantity(item.productId, item.quantity - 1)
-                    }
-                    className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 disabled:opacity-20 transition-colors"
-                  >
-                    <Minus size={14} className="text-zinc-500" />
-                  </button>
-                  <span className="text-xs font-bold w-8 text-center tracking-widest">
-                    {item.quantity}
-                  </span>
-                  <button
-                    type="button"
-                    disabled={isPending}
-                    onClick={() =>
-                      handleUpdateQuantity(item.productId, item.quantity + 1)
-                    }
-                    className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 disabled:opacity-20 transition-colors"
-                  >
-                    <Plus size={14} className="text-zinc-500" />
-                  </button>
-                </div>
+              <div className="flex flex-col space-y-1">
+                <h3 className="text-white text-xl font-serif font-bold group-hover:text-primary transition-colors">
+                  {item.product.name}
+                </h3>
+                <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest">
+                  Sacred Tool • #AK-{item.productId.slice(-4).toUpperCase()}
+                </p>
+              </div>
+            </div>
 
+            <div className="flex items-center gap-12">
+              <div className="flex items-center gap-4 text-white border border-primary/20 rounded-full px-4 py-1.5 bg-primary/5">
+                <button
+                  type="button"
+                  disabled={isPending || item.quantity <= 1}
+                  onClick={() => handleUpdateQuantity(item.productId, item.quantity - 1)}
+                  className="text-primary hover:text-white transition-colors flex h-6 w-6 items-center justify-center cursor-pointer disabled:opacity-20"
+                >
+                  <Minus size={14} />
+                </button>
+                <span className="text-sm font-black w-6 text-center tabular-nums">
+                  {item.quantity}
+                </span>
                 <button
                   type="button"
                   disabled={isPending}
-                  onClick={() => handleRemove(item.productId)}
-                  className="group/remove flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-600 hover:text-red-400 transition-all duration-500"
+                  onClick={() => handleUpdateQuantity(item.productId, item.quantity + 1)}
+                  className="text-primary hover:text-white transition-colors flex h-6 w-6 items-center justify-center cursor-pointer disabled:opacity-20"
                 >
-                  <Trash2 size={12} className="group-hover/remove:scale-110 transition-transform" />
-                  Withdraw
+                  <Plus size={14} />
                 </button>
               </div>
+
+              <div className="text-right min-w-[100px]">
+                <p className="text-primary font-serif font-black text-2xl tracking-tight">
+                  ${lineTotal.toFixed(2)}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                disabled={isPending}
+                onClick={() => handleRemove(item.productId)}
+                className="text-zinc-700 hover:text-red-400 transition-colors p-2"
+              >
+                <Trash2 size={18} />
+              </button>
             </div>
           </div>
         );

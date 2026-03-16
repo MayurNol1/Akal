@@ -3,11 +3,13 @@ import { CreateProductInput, UpdateProductInput } from "./validation";
 
 export class ProductService {
   static async createProduct(data: CreateProductInput) {
-    return ProductRepository.create(data);
+    const product = await ProductRepository.create(data);
+    return JSON.parse(JSON.stringify(product));
   }
 
-  static async getProducts(filters?: { categoryId?: string; isActive?: boolean }) {
-    return ProductRepository.findMany(filters);
+  static async getProducts(filters?: { categoryId?: string; isActive?: boolean; limit?: number }) {
+    const products = await ProductRepository.findMany(filters);
+    return JSON.parse(JSON.stringify(products));
   }
 
   static async getProductById(id: string) {
@@ -17,11 +19,12 @@ export class ProductService {
       throw new Error("Product not found");
     }
     
-    return product;
+    return JSON.parse(JSON.stringify(product));
   }
 
   static async updateProduct(id: string, data: UpdateProductInput) {
-    return ProductRepository.update(id, data);
+    const product = await ProductRepository.update(id, data);
+    return JSON.parse(JSON.stringify(product));
   }
 
   static async deleteProduct(id: string) {

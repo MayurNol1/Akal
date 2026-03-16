@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CreateProductSchema, type CreateProductInput } from "@/modules/products/validation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { 
@@ -36,7 +36,21 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [categories, setCategories] = useState<{ id: string, name: string }[]>([]);
+  const [isAddingCategory, setIsAddingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        if(data.success && data.data) {
+          setCategories(data.data);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   const {
     register,
@@ -66,6 +80,28 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
       categoryId: null
     },
   });
+
+  const handleCreateCategory = async () => {
+    if(!newCategoryName.trim()) return;
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newCategoryName })
+      });
+      const data = await res.json();
+      if(data.success && data.data) {
+        setCategories(prev => [...prev, data.data].sort((a,b) => a.name.localeCompare(b.name)));
+        setValue('categoryId', data.data.id, { shouldValidate: true });
+        setIsAddingCategory(false);
+        setNewCategoryName("");
+      } else {
+        setError(data.error || "Failed to create category");
+      }
+    } catch {
+      setError("Failed to create category");
+    }
+  };
 
   const onSubmit = async (data: CreateProductInput) => {
     setError(null);
@@ -129,7 +165,9 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit as any)} className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+    <>
+      {/* @ts-expect-error - Mismatch between React Hook Form and Zod Input Typings */}
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 lg:grid-cols-3 gap-16">
       <div className="lg:col-span-2 space-y-12">
         <div className="glass border border-white/5 rounded-4xl p-10 space-y-10 relative overflow-hidden group">
           <div className="absolute inset-x-0 bottom-0 h-px bg-linear-to-r from-transparent via-gold/10 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-1000" />
@@ -153,6 +191,56 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
                 placeholder="The Eternal Rudraksha"
               />
               {errors.name && <p className="text-red-500 text-[9px] mt-1 ml-1 font-bold uppercase tracking-widest">{errors.name.message}</p>}
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.4em] ml-1">Spiritual Category</label>
+              {!isAddingCategory ? (
+                <div className="flex gap-4">
+                  <select
+                    {...register("categoryId")}
+                    className="flex-1 bg-black/40 border border-white/5 rounded-2xl p-5 text-zinc-300 focus:outline-none focus:border-gold/30 transition-all font-light tracking-wide appearance-none cursor-pointer"
+                  >
+                    <option value="">Select a Category...</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id} className="bg-background-dark text-white">
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                  <button 
+                    type="button" 
+                    onClick={() => setIsAddingCategory(true)}
+                    className="px-6 rounded-2xl border border-white/10 text-xs font-bold uppercase tracking-widest text-zinc-400 hover:text-white hover:border-white/30 transition-all active:scale-95"
+                  >
+                    + New
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-4">
+                  <input
+                    value={newCategoryName}
+                    onChange={e => setNewCategoryName(e.target.value)}
+                    placeholder="New Category Name..."
+                    className="flex-1 bg-black/40 border border-gold/30 rounded-2xl p-5 text-white focus:outline-none focus:border-gold/50 transition-all font-light tracking-wide"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCreateCategory}
+                    className="px-6 rounded-2xl bg-gold/10 text-gold text-xs font-bold uppercase tracking-widest hover:bg-gold hover:text-black transition-all active:scale-95"
+                  >
+                    Add
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingCategory(false)}
+                    className="px-6 rounded-2xl border border-red-500/20 text-red-500/80 hover:bg-red-500/10 transition-all text-xs font-bold uppercase active:scale-95"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3">
@@ -365,6 +453,7 @@ export default function ProductForm({ initialData, productId, isEdit }: ProductF
             )}
           </div>
       </div>
-    </form>
+      </form>
+    </>
   );
 }

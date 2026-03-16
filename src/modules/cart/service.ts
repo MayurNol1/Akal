@@ -7,12 +7,14 @@ import {
 
 async function getOrCreateCart(userId: string) {
   const existing = await CartRepository.findByUserId(userId);
-  if (existing) return existing;
-  return CartRepository.createCart(userId);
+  if (existing) return JSON.parse(JSON.stringify(existing));
+  const created = await CartRepository.createCart(userId);
+  return JSON.parse(JSON.stringify(created));
 }
 
 async function getCart(userId: string) {
-  return CartRepository.findByUserId(userId);
+  const cart = await CartRepository.findByUserId(userId);
+  return cart ? JSON.parse(JSON.stringify(cart)) : null;
 }
 
 async function addToCart(userId: string, input: AddToCartInput) {
