@@ -316,28 +316,10 @@ export default async function HomePage() {
 
 function ProductCard({ id, image, title, price, desc }: { id: string; image: string; title: string; price: string; desc: string }) {
   return (
-    <div style={{
-      background: "#161612",
-      border: "1px solid rgba(212,169,74,0.1)",
-      borderRadius: "14px",
-      overflow: "hidden",
+    <div className="product-card" style={{
       display: "flex", flexDirection: "column",
-      transition: "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease",
-      cursor: "pointer", position: "relative",
-    }}
-      onMouseEnter={e => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.transform = "translateY(-4px)";
-        el.style.boxShadow = "0 16px 40px rgba(0,0,0,0.4)";
-        el.style.borderColor = "rgba(212,169,74,0.2)";
-      }}
-      onMouseLeave={e => {
-        const el = e.currentTarget as HTMLElement;
-        el.style.transform = "translateY(0)";
-        el.style.boxShadow = "none";
-        el.style.borderColor = "rgba(212,169,74,0.1)";
-      }}
-    >
+      position: "relative",
+    }}>
       <Link href={`/products/${id}`} style={{ aspectRatio: "1", position: "relative", overflow: "hidden", background: "#1c1c18", display: "block" }}>
         <Image src={image} alt={title} fill className="object-cover transition-transform duration-500" />
       </Link>

@@ -276,14 +276,7 @@ export default async function ProductDetailsPage({ params }: ProductPageProps) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px" }}>
             {relatedProducts.slice(0, 4).map((rp) => (
               <Link key={rp.id} href={`/products/${rp.id}`} style={{ textDecoration: "none" }}>
-                <div style={{
-                  background: "#161612", border: "1px solid rgba(212,169,74,0.1)",
-                  borderRadius: "12px", overflow: "hidden",
-                  transition: "transform 0.2s, border-color 0.2s",
-                }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.2)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.1)"; }}
-                >
+                <div className="bg-[#161612] border border-gold/10 rounded-xl overflow-hidden transition-all hover:-translate-y-[3px] hover:border-gold/20">
                   <div style={{ aspectRatio: "1 / 1", position: "relative", background: "#1c1c18" }}>
                     <Image src={rp.imageUrl || ""} alt={rp.name} fill style={{ objectFit: "cover" }} />
                   </div>

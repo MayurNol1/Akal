@@ -10,9 +10,13 @@ import { useState } from "react";
 
 const navItems = [
   { href: "/admin", icon: "grid_view", label: "Overview", exact: true },
+  { href: "/admin/analytics", icon: "insights", label: "Analytics" },
+  { href: "/admin/inventory", icon: "inventory", label: "Inventory" },
   { href: "/admin/products", icon: "inventory_2", label: "Products" },
   { href: "/admin/orders", icon: "receipt_long", label: "Orders" },
+  { href: "/admin/customers", icon: "groups", label: "Customers" },
   { href: "/admin/users", icon: "group", label: "Users" },
+  { href: "/admin/coupons", icon: "local_offer", label: "Coupons" },
   { href: "/admin/settings", icon: "settings", label: "Settings" },
 ];
 

@@ -75,16 +75,7 @@ export default async function DashboardPage() {
           {/* Nav */}
           <nav style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "4px" }}>
             {navItems.map(item => (
-              <Link key={item.label} href={item.href} style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: "10px 12px", borderRadius: "10px",
-                textDecoration: "none", transition: "all 0.18s",
-                color: "rgba(200,195,178,0.65)", background: "transparent",
-                border: "1px solid transparent",
-              }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "rgba(212,169,74,0.06)"; (e.currentTarget as HTMLElement).style.color = "#f0ede6"; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "rgba(200,195,178,0.65)"; }}
-              >
+              <Link key={item.label} href={item.href} className="flex items-center justify-between p-2.5 px-3 rounded-xl no-underline transition-all text-[#c8c3b2]/65 hover:bg-gold/5 hover:text-[#f0ede6]">
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                   <span className="material-symbols-outlined" style={{ fontSize: "18px" }}>{item.icon}</span>
                   <span style={{ fontSize: "12px", fontWeight: 500 }}>{item.label}</span>
@@ -123,10 +114,7 @@ export default async function DashboardPage() {
               { icon: "favorite_border", label: "Wishlist", value: activeIntentions, unit: "saved" },
               { icon: "stars", label: "Loyalty Points", value: ordersCount * 150, unit: "pts" },
             ].map(stat => (
-              <div key={stat.label} style={{
-                background: "#161612", border: "1px solid rgba(212,169,74,0.1)",
-                borderRadius: "14px", padding: "20px",
-              }}>
+              <div key={stat.label} className="bg-[#161612] border border-gold/10 rounded-xl p-5 transition-all hover:-translate-y-[3px] hover:border-gold/20">
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
                   <div style={{ width: "36px", height: "36px", borderRadius: "10px", background: "rgba(212,169,74,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <span className="material-symbols-outlined" style={{ fontSize: "18px", color: "#d4a94a" }}>{stat.icon}</span>
@@ -195,15 +183,7 @@ export default async function DashboardPage() {
               { icon: "support_agent", label: "Get Support", sub: "We're here to help", href: "mailto:support@akal.com", color: "#25e2f4" },
             ].map(action => (
               <Link key={action.label} href={action.href} style={{ textDecoration: "none" }}>
-                <div style={{
-                  background: "#161612", border: "1px solid rgba(212,169,74,0.08)",
-                  borderRadius: "14px", padding: "20px",
-                  transition: "transform 0.2s, border-color 0.2s",
-                  cursor: "pointer",
-                }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(-3px)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.2)"; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.08)"; }}
-                >
+                <div className="bg-[#161612] border border-gold/10 rounded-2xl p-5 transition-all cursor-pointer hover:-translate-y-[3px] hover:border-gold/20">
                   <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: `${action.color}15`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "14px" }}>
                     <span className="material-symbols-outlined" style={{ fontSize: "20px", color: action.color }}>{action.icon}</span>
                   </div>

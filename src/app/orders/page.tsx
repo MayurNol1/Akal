@@ -70,17 +70,7 @@ export default async function OrdersPage() {
               const st = statusConfig[order.status] || { label: order.status, color: "#d4a94a", bg: "rgba(212,169,74,0.08)", border: "rgba(212,169,74,0.2)" };
               return (
                 <Link key={order.id} href={`/orders/${order.id}`} style={{ textDecoration: "none" }}>
-                  <div style={{
-                    background: "#161612", border: "1px solid rgba(212,169,74,0.08)",
-                    borderRadius: "14px", padding: "20px 24px",
-                    display: "flex", alignItems: "center", justifyContent: "space-between",
-                    gap: "16px", flexWrap: "wrap",
-                    transition: "border-color 0.18s, transform 0.18s",
-                    cursor: "pointer",
-                  }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.2)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(212,169,74,0.08)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-                  >
+                  <div className="bg-[#161612] border border-gold/10 rounded-xl p-5 md:p-6 flex items-center justify-between gap-4 flex-wrap transition-all cursor-pointer hover:border-gold/20 hover:-translate-y-[2px]">
                     {/* Left */}
                     <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                       <div style={{ width: "44px", height: "44px", borderRadius: "12px", background: "rgba(212,169,74,0.08)", border: "1px solid rgba(212,169,74,0.14)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
